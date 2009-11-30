@@ -11,14 +11,21 @@
 
 @implementation RootViewController
 
-/*
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    moviesArray = [[NSMutableArray alloc] init];
+    Movie *aMovie = [[Movie alloc] init];
+    aMovie.title = @"Plaything Anecdote";
+    aMovie.boxOfficeGross = [NSNumber numberWithInt:191796233];
+    aMovie.summary = @"Did you ever think your dolls were really alive?  Well, they are.";
+    [moviesArray addObject:aMovie];
+    [aMovie release];
 }
-*/
+
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -71,7 +78,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [moviesArray count];
 }
 
 
@@ -86,7 +93,8 @@
     }
     
 	// Configure the cell.
-
+    Movie *aMovie = [moviesArray objectAtIndex:indexPath.row];
+    cell.textLabel.text = aMovie.title;
     return cell;
 }
 
@@ -145,6 +153,8 @@
 
 
 - (void)dealloc {
+    [moviesArray release];
+    
     [super dealloc];
 }
 

@@ -6,7 +6,9 @@
 //  Copyright Beepscore LLC 2009. All rights reserved.
 //
 
+#import "Movie.h"
 @interface RootViewController : UITableViewController {
+    NSMutableArray *moviesArray;
 }
 
 @end
