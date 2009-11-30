@@ -11,6 +11,7 @@
 
 @implementation RootViewController
 
+@synthesize movieEditor;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -27,12 +28,19 @@
     [aMovie release];
 }
 
-
-/*
  - (void)viewWillAppear:(BOOL)animated {
  [super viewWillAppear:animated];
+     // update table view if a movie was edited
+     if (editingMovie) {
+         NSIndexPath *updatedPath = [NSIndexPath
+                                    indexPathForRow:[moviesArray indexOfObject:editingMovie]
+                                    inSection:0];
+         NSArray *updatedPaths = [NSArray arrayWithObject:updatedPath];
+         [self.tableView reloadRowsAtIndexPaths:updatedPaths withRowAnimation:NO];
+         editingMovie = nil;
+     }
  }
- */
+
 /*
  - (void)viewDidAppear:(BOOL)animated {
  [super viewDidAppear:animated];
@@ -103,20 +111,18 @@
     return cell;
 }
 
-
-
-/*
  // Override to support row selection in the table view.
- - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+ - (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
  
  // Navigation logic may go here -- for example, create and push another view controller.
  // AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
  // [self.navigationController pushViewController:anotherViewController animated:YES];
  // [anotherViewController release];
+     editingMovie = [moviesArray objectAtIndex:indexPath.row];
+     movieEditor.movie = editingMovie;
+     [self.navigationController pushViewController:movieEditor animated:YES];
  }
- */
-
-
 
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView
@@ -138,13 +144,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     }   
 }
 
-
 /*
  // Override to support rearranging the table view.
  - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
  }
  */
-
 
 /*
  // Override to support conditional rearranging of the table view.
@@ -154,13 +158,29 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
  }
  */
 
+- (IBAction)handleAddTapped {
+    Movie *newMovie = [[Movie alloc] init];
+    editingMovie = newMovie;
+    movieEditor.movie = editingMovie;
+    [self.navigationController pushViewController:movieEditor animated:YES];
+    // update UITableView (in background) with new member
+    [moviesArray addObject:newMovie];
+    NSIndexPath *newMoviePath = 
+      [NSIndexPath indexPathForRow:([moviesArray count] - 1) inSection:0];
+    NSArray *newMoviePaths = [NSArray arrayWithObject:newMoviePath];
+    [self.tableView insertRowsAtIndexPaths:newMoviePaths withRowAnimation:NO];    
+    [newMovie release];
+}
 
 - (void)dealloc {
+    // release properties
+    self.movieEditor = nil;
+    
+    // release instance variables without associated properties
     [moviesArray release];
     
     [super dealloc];
 }
-
 
 @end
 

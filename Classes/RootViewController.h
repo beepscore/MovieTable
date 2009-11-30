@@ -7,8 +7,16 @@
 //
 
 #import "Movie.h"
+#import "MovieEditorViewController.h"
+
 @interface RootViewController : UITableViewController {
     NSMutableArray *moviesArray;
+    MovieEditorViewController *movieEditor;
+    Movie *editingMovie;
 }
+
+@property (nonatomic, retain) IBOutlet MovieEditorViewController *movieEditor;
+
+- (IBAction)handleAddTapped;
 
 @end
