@@ -13,6 +13,7 @@
 
 @synthesize movieEditor;
 @synthesize nibLoadedCell;
+@synthesize sortControl;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,6 +30,32 @@
     [aMovie release];
 }
 
+// If we don't want to expose a method publicly, can't declare method signature in .h file
+// If not in .h, declaration must appear in .m file before any statement that calls it
+// Ref Dudney sec 5.8
+- (void)sortMoviesArray {
+    NSSortDescriptor *sorter;
+    switch (sortControl.selectedSegmentIndex) {
+        case 0:  // sort alpha ascending
+            sorter = [[NSSortDescriptor alloc]
+                      initWithKey:@"title" ascending:YES];
+            break;
+        case 1:  // sort alpha descending
+            sorter = [[NSSortDescriptor alloc]
+                      initWithKey:@"title" ascending:NO];
+            break;
+        case 2:
+        default:    // sort $$ ascending
+            sorter = [[NSSortDescriptor alloc]
+                      initWithKey:@"boxOfficeGross" ascending:YES];
+            break;
+    }
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sorter];
+    [moviesArray sortUsingDescriptors:sortDescriptors];
+    [sorter release];
+}
+
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     // update table view if a movie was edited
@@ -40,6 +67,8 @@
         [self.tableView reloadRowsAtIndexPaths:updatedPaths withRowAnimation:NO];
         editingMovie = nil;
     }
+    [self sortMoviesArray];
+    [self.tableView reloadData];
 }
 
 /*
@@ -176,6 +205,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *newMoviePaths = [NSArray arrayWithObject:newMoviePath];
     [self.tableView insertRowsAtIndexPaths:newMoviePaths withRowAnimation:NO];    
     [newMovie release];
+}
+
+- (IBAction)handleSortChanged {
+    [self sortMoviesArray];
+    [self.tableView reloadData];
 }
 
 - (void)dealloc {

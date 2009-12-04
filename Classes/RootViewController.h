@@ -14,11 +14,14 @@
     MovieEditorViewController *movieEditor;
     Movie *editingMovie;
     UITableViewCell *nibLoadedCell;
+    UISegmentedControl *sortControl;
 }
 
 @property (nonatomic, retain) IBOutlet MovieEditorViewController *movieEditor;
 @property (nonatomic, retain) IBOutlet UITableViewCell *nibLoadedCell;
+@property (nonatomic, retain) IBOutlet UISegmentedControl *sortControl;
 
 - (IBAction)handleAddTapped;
+- (IBAction)handleSortChanged;
 
 @end
