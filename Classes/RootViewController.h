@@ -13,9 +13,11 @@
     NSMutableArray *moviesArray;
     MovieEditorViewController *movieEditor;
     Movie *editingMovie;
+    UITableViewCell *nibLoadedCell;
 }
 
 @property (nonatomic, retain) IBOutlet MovieEditorViewController *movieEditor;
+@property (nonatomic, retain) IBOutlet UITableViewCell *nibLoadedCell;
 
 - (IBAction)handleAddTapped;
 

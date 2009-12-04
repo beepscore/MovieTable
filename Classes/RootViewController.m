@@ -12,6 +12,7 @@
 @implementation RootViewController
 
 @synthesize movieEditor;
+@synthesize nibLoadedCell;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,18 +29,18 @@
     [aMovie release];
 }
 
- - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
-     // update table view if a movie was edited
-     if (editingMovie) {
-         NSIndexPath *updatedPath = [NSIndexPath
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    // update table view if a movie was edited
+    if (editingMovie) {
+        NSIndexPath *updatedPath = [NSIndexPath
                                     indexPathForRow:[moviesArray indexOfObject:editingMovie]
                                     inSection:0];
-         NSArray *updatedPaths = [NSArray arrayWithObject:updatedPath];
-         [self.tableView reloadRowsAtIndexPaths:updatedPaths withRowAnimation:NO];
-         editingMovie = nil;
-     }
- }
+        NSArray *updatedPaths = [NSArray arrayWithObject:updatedPath];
+        [self.tableView reloadRowsAtIndexPaths:updatedPaths withRowAnimation:NO];
+        editingMovie = nil;
+    }
+}
 
 /*
  - (void)viewDidAppear:(BOOL)animated {
@@ -100,29 +101,34 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
-                                       reuseIdentifier:CellIdentifier] autorelease];
+        [[NSBundle mainBundle] loadNibNamed:@"MovieTableCell" owner:self options:NULL];
+        cell = nibLoadedCell;
     }
     
-	// Configure the cell.
+    // Configure the cell.
     Movie *aMovie = [moviesArray objectAtIndex:indexPath.row];
-    cell.textLabel.text = aMovie.title;
-    cell.detailTextLabel.text = aMovie.summary;
+    UILabel *titleLabel = (UILabel *) [cell viewWithTag:1];
+    titleLabel.text = aMovie.title;
+    UILabel *boxOfficeLabel = (UILabel *) [cell viewWithTag:2];
+    boxOfficeLabel.text = [NSString stringWithFormat:@"%d",
+                           [aMovie.boxOfficeGross intValue]];
+    UILabel *summaryLabel = (UILabel *) [cell viewWithTag:3];
+    summaryLabel.text = aMovie.summary;
     return cell;
 }
 
- // Override to support row selection in the table view.
- - (void)tableView:(UITableView *)tableView 
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView 
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
- 
- // Navigation logic may go here -- for example, create and push another view controller.
- // AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
- // [self.navigationController pushViewController:anotherViewController animated:YES];
- // [anotherViewController release];
-     editingMovie = [moviesArray objectAtIndex:indexPath.row];
-     movieEditor.movie = editingMovie;
-     [self.navigationController pushViewController:movieEditor animated:YES];
- }
+    
+    // Navigation logic may go here -- for example, create and push another view controller.
+    // AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
+    // [self.navigationController pushViewController:anotherViewController animated:YES];
+    // [anotherViewController release];
+    editingMovie = [moviesArray objectAtIndex:indexPath.row];
+    movieEditor.movie = editingMovie;
+    [self.navigationController pushViewController:movieEditor animated:YES];
+}
 
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView
@@ -166,7 +172,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     // update UITableView (in background) with new member
     [moviesArray addObject:newMovie];
     NSIndexPath *newMoviePath = 
-      [NSIndexPath indexPathForRow:([moviesArray count] - 1) inSection:0];
+    [NSIndexPath indexPathForRow:([moviesArray count] - 1) inSection:0];
     NSArray *newMoviePaths = [NSArray arrayWithObject:newMoviePath];
     [self.tableView insertRowsAtIndexPaths:newMoviePaths withRowAnimation:NO];    
     [newMovie release];
