@@ -215,7 +215,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)dealloc {
     // release properties
     self.movieEditor = nil;
-    
+    self.nibLoadedCell = nil;
+    self.sortControl = nil;
+
     // release instance variables without associated properties
     [moviesArray release];
     
