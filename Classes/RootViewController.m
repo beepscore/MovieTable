@@ -131,7 +131,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"MovieTableCell" owner:self options:NULL];
-        cell = nibLoadedCell;
+        cell = self.nibLoadedCell;
     }
     
     // Configure the cell.
